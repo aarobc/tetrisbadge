@@ -193,12 +193,12 @@ void strobe()
   //digitalWrite(ROW_STROBE, LOW);
 }
 
-bool top = true;
 
 void generatePiece(){
   checkLine();
- // int wat = rand() % 4; 
-int wat = 3;
+  delay(10);
+  int wat = rand() % 5; 
+//int wat = 3;
   switch(wat){
     // angle piece 
     case 1:
@@ -244,12 +244,26 @@ int wat = 3;
       piece[4][1] = 0;  
       piece[4][0] = 5;  
       break;
+    case 4:
+      // square block
+      piece[0][1] = -1;  
+      piece[0][0] =  5;  
+
+      piece[1][1] = -1;  
+      piece[1][0] =  6;  
+
+      piece[2][1] = -1;  
+      piece[2][0] = 7;  
+
+      piece[3][1] = 0;  
+      piece[3][0] = 7;  
+      // rotation center point
+      piece[4][1] = 0;  
+      piece[4][0] = 6;  
+      break;
     default:
       break;
   }
-
-
-  top = true;
 }
 
 void copyPiece(int source[][2], int dest[][2]){
@@ -283,10 +297,10 @@ void checkLine(){
 
 
 void moveDown(int address){
-  for(int y = address; y >= 0; y--){
-     for(int x = 0; x < 16; x++){
-      frameBuffer[y][x] = frameBuffer[y + 1][x];
-     // Serial.print(frameBuffer[y][x]);
+    for(int y = address; y > 0; y--){
+  for(int x = 0; x < 16; x++){
+      frameBuffer[y][x] = frameBuffer[y - 1][x];
+      // Serial.print(frameBuffer[y][x]);
     }  
     // Serial.println();
   }
@@ -426,8 +440,6 @@ void writePiece(){
       frameBuffer[lastPiece[p][1]][lastPiece[p][0]] = 0;  
     }
   }
-
-
 }
 
 
