@@ -198,7 +198,7 @@ bool top = true;
 void generatePiece(){
   checkLine();
  // int wat = rand() % 4; 
-int wat = 1;
+int wat = 3;
   switch(wat){
     // angle piece 
     case 1:
@@ -228,6 +228,7 @@ int wat = 1;
       piece[4][0] = 5;  
       break;
     case 3:
+      // square block
       piece[0][1] = -1;  
       piece[0][0] =  4;  
 
@@ -264,32 +265,31 @@ void checkLine(){
     bool line = true;
     for(int p = 0; p < 16; p++){
 
-      if(!frameBuffer[i][p]){
+      if(frameBuffer[i][p] == 0){
         line = false; 
       }
+    }
       // if there is a complete line 
       if(line){
         animateLine(i);
-       // moveDown(line);
+        moveDown(i);
         
       }
 
 
-    }
     // TODO: if there is a complete line, animate it, then remove it, and increment the buffer
   }
 }
 
 
-void moveDown(int y){
- 
-  for(int x = 0; x > 16; x++){
-
-
+void moveDown(int address){
+  for(int y = address; y >= 0; y--){
+     for(int x = 0; x < 16; x++){
+      frameBuffer[y][x] = frameBuffer[y + 1][x];
+     // Serial.print(frameBuffer[y][x]);
+    }  
+    // Serial.println();
   }
-  
-
-
 }
 
 void animateLine(int line){
