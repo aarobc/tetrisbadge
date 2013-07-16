@@ -196,8 +196,9 @@ void strobe()
 bool top = true;
 
 void generatePiece(){
-  int wat = rand() % 4; 
-//int wat = 1;
+  checkLine();
+ // int wat = rand() % 4; 
+int wat = 1;
   switch(wat){
     // angle piece 
     case 1:
@@ -264,60 +265,78 @@ void checkLine(){
     for(int p = 0; p < 16; p++){
 
       if(!frameBuffer[i][p]){
-       line = false; 
+        line = false; 
       }
-      // TODO: if there is a complete line, animate it, then remove it, and increment the buffer
+      // if there is a complete line 
+      if(line){
+        animateLine(i);
+       // moveDown(line);
+        
+      }
+
+
     }
+    // TODO: if there is a complete line, animate it, then remove it, and increment the buffer
   }
 }
 
-bool rotatePiece(int dir, int origin_x, int origin_y, bool can_rotate_test){
- int next_x_pos, next_y_pos;
-   
- int m_iPosX;
- int m_iPosY;
-   // Calculate block offset from given origin
- int offset_x = m_iPosX - origin_x;
- int offset_y = m_iPosY - origin_y;
 
- // If there’s no offset, we’re trying to rotate block around itself, so do nothing
- // (we can rotate block around itself, so return true)
- if(offset_x ==0 && offset_y == 0)
-   return true;
+void moveDown(int y){
+ 
+  for(int x = 0; x > 16; x++){
 
- // Now, this is the main part of the algorithm – rotation. 
- // If you would take a look on general rotation in math, 
- // they use sin(angle) and cos(angle) to find out x/y position of rotated point ‘aingle’ radians. 
- // Here we use a simplified approach and swap X with Offset of Y, and Y with negative Offset of X.
- int X = offset_y;
- int Y = -offset_x;
 
- // So, the next position effectively becomes an origin coordinate (x/y) plus rotated XY vector values.
-// next_x_pos = origin_x + X;
-// next_y_pos = origin_y + Y;
+  }
+  
 
- // If user requests test of possibility of the rotation, do the same thing as above, and..
- if(can_rotate_test)
- {
-  // int num_blocks_x = WINDOW_WIDTH / (BLOCK_SIZE + BLOCK_SPACING);
-  // int num_blocks_y = WINDOW_HEIGHT / (BLOCK_SIZE + BLOCK_SPACING);
 
-   // If block is in any boundary (min/max), return false (e.g ‘cannot rotate’) 
-   // if(next_y_pos == 0 || next_y_pos == num_blocks_y)
- //  return false;
- //  if(next_x_pos == -1|| next_x_pos == num_blocks_x)
- //    return false;
- }
- // No, user requests simple rotation, so do it – we pre-calculated next x/y position, 
- // so simply assign values to member variables.
- else
- {
-   m_iPosX = next_x_pos;
-   m_iPosY = next_y_pos;
- }
+}
 
- // Return true if user did or didn’t requested testing because we did test before,
- // and if we passed it, it means that it’s all OK.
+void animateLine(int line){
+
+  for(int o = 0; o < 16; o++){
+    frameBuffer[line][o] = 0;
+    //frameBuffer[line][o] = 1;
+  }
+  delay(300);
+  for(int p = 0; p < 16; p++){
+    frameBuffer[line][p] = 1;
+    //frameBuffer[line][o] = 1;
+  }
+  delay(300);
+  for(int o = 0; o < 16; o++){
+    frameBuffer[line][o] = 0;
+    //frameBuffer[line][o] = 1;
+  }
+}
+
+bool rotatePiece(){
+
+  copyPiece(piece, lastPiece);
+  int next_x_pos, next_y_pos;
+
+  for(int p = 0; p < 4; p++){
+
+    int m_iPosX = lastPiece[p][0];
+    int m_iPosY = lastPiece[p][1];
+    // Calculate block offset from given origin
+    int offset_x = m_iPosX - lastPiece[4][0];
+    int offset_y = m_iPosY - lastPiece[4][1];
+
+    int X = offset_y;
+    int Y = -offset_x;
+
+    // So, the next position effectively becomes an origin coordinate (x/y) plus rotated XY vector values.
+    piece[p][0] = lastPiece[4][0]; + X;
+    piece[p][1] = lastPiece[4][1]; + Y;
+
+    // If user requests test of possibility of the rotation, do the same thing as above, and..
+    m_iPosX = next_x_pos;
+    m_iPosY = next_y_pos;
+
+  }
+    // Return true if user did or didn’t requested testing because we did test before,
+    // and if we passed it, it means that it’s all OK.
     writePiece();
 
 
@@ -379,6 +398,10 @@ int moveXY(int move, int axis){
     // check against the buffer
     if(!same && frameBuffer[piece[p][1]][piece[p][0]]){
       // reset the variable back to it's original value
+      if(axis){
+         generatePiece();       
+          return 0;
+      }
       copyPiece(lastPiece, piece);
       return 0;
     }
@@ -430,7 +453,7 @@ void ohJoy(){
   if(topB != topBP){
     if(!topB){
       Serial.println(topB);
-      //rotatePiece();
+      rotatePiece();
     }
 
     topBP = topB;
@@ -444,7 +467,7 @@ void loop()
 {
   static long lastTime = millis();
   ohJoy();
-  if(millis() > lastTime + 300)
+  if(millis() > lastTime + 200)
   {
     lastTime = millis();
   //  drop();
