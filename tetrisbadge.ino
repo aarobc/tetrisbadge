@@ -199,6 +199,7 @@ void generatePiece(){
   delay(10);
   int wat = rand() % 5; 
 //int wat = 3;
+  int offset = 4;
   switch(wat){
     // angle piece 
     case 1:
@@ -224,7 +225,7 @@ void generatePiece(){
         piece[p][0] = p + 4;  
       }
       // rotation center point
-      piece[4][1] = 0;  
+      piece[4][1] = -1;  
       piece[4][0] = 5;  
       break;
     case 3:
@@ -242,7 +243,7 @@ void generatePiece(){
       piece[3][0] = 5;  
       // rotation center point
       piece[4][1] = 0;  
-      piece[4][0] = 5;  
+      piece[4][0] = 4;  
       break;
     case 4:
       // square block
@@ -306,6 +307,19 @@ void moveDown(int address){
   }
 }
 
+void dropPiece(){
+
+  int deep = 0; 
+  copyPiece(piece, lastPiece);
+  for(int i = 0; i < 4; i++){
+      
+  }
+  for(int o = 0; o < 16; o++){
+   // piece[o][
+  }
+
+
+}
 void animateLine(int line){
 
   for(int o = 0; o < 16; o++){
@@ -330,7 +344,7 @@ bool rotatePiece(){
   // storing the axis of rotation in the 5th spot of the piece array
   int offset_x = lastPiece[4][0];
   int offset_y = lastPiece[4][1];
-
+  int wall = 0;
   for(int p = 0; p < 4; p++){
     //
     int X = lastPiece[p][0] - offset_x;
@@ -339,7 +353,16 @@ bool rotatePiece(){
     // preform the translation
     piece[p][0] = (Y * -1) + offset_x;
     piece[p][1] = X + offset_y;
+
+    wall = (piece[p][0] < 0) ? wall + 1 : wall;  
+    wall = (piece[p][0] > 15) ? wall - 1 : wall;  
   }
+ // if near the wall, do this to scoot it over 
+ if(wall != 0){
+    for(int i = 0; i < 4; i++){
+      piece[i][0] += wall;
+    }
+ }
   writePiece();
 
 
@@ -433,15 +456,17 @@ void writePiece(){
 
 
 bool topBP = false;
-//static long lastStick millis();
+static long lastStick = 0;
 void ohJoy(){
 
   int joystick_x = map(analogRead(JOY_X), 250, 700, 3, 0);  
   int joystick_y = map(analogRead(JOY_Y), 300, 800, 0, 3);  
 
   bool topB = digitalRead(BUTTON_TOP);   
+  
+  if(millis() > lastStick){
+    
 
-  if(oldX != joystick_x){
     if(joystick_x == 3){
       movePiece(1, 0);
     }
@@ -449,19 +474,21 @@ void ohJoy(){
     if(joystick_x == 0){
       movePiece(-1, 0);
     }
+
+    lastStick = millis() + 100;
+  }
+
+  if(oldX != joystick_x){
+
     oldX = joystick_x;  
   }
   
   if(topB != topBP){
     if(!topB){
-      Serial.println(topB);
       rotatePiece();
     }
-
     topBP = topB;
-
   }
-
 }
 
 
@@ -469,11 +496,10 @@ void loop()
 {
   static long lastTime = millis();
   ohJoy();
-  if(millis() > lastTime + 200)
+  if(millis() > lastTime + 300)
   {
     lastTime = millis();
   //  drop();
    movePiece(0, 1); 
   }
-
 }
