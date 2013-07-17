@@ -333,8 +333,8 @@ bool rotatePiece(){
 
   for(int p = 0; p < 4; p++){
     //
-    int X = lastPiece[p][0] - offset_y;
-    int Y = lastPiece[p][1] - offset_x;
+    int X = lastPiece[p][0] - offset_x;
+    int Y = lastPiece[p][1] - offset_y;
 
     // preform the translation
     piece[p][0] = (Y * -1) + offset_x;
@@ -433,7 +433,7 @@ void writePiece(){
 
 
 bool topBP = false;
-static long lastStick millis();
+//static long lastStick millis();
 void ohJoy(){
 
   int joystick_x = map(analogRead(JOY_X), 250, 700, 3, 0);  
