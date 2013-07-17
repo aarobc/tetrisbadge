@@ -327,31 +327,20 @@ void animateLine(int line){
 bool rotatePiece(){
 
   copyPiece(piece, lastPiece);
-  int next_x_pos, next_y_pos;
+  // storing the axis of rotation in the 5th spot of the piece array
+  int offset_x = lastPiece[4][0];
+  int offset_y = lastPiece[4][1];
 
   for(int p = 0; p < 4; p++){
+    //
+    int X = lastPiece[p][0] - offset_y;
+    int Y = lastPiece[p][1] - offset_x;
 
-    int m_iPosX = lastPiece[p][0];
-    int m_iPosY = lastPiece[p][1];
-    // Calculate block offset from given origin
-    int offset_x = m_iPosX - lastPiece[4][0];
-    int offset_y = m_iPosY - lastPiece[4][1];
-
-    int X = offset_y;
-    int Y = -offset_x;
-
-    // So, the next position effectively becomes an origin coordinate (x/y) plus rotated XY vector values.
-    piece[p][0] = lastPiece[4][0]; + X;
-    piece[p][1] = lastPiece[4][1]; + Y;
-
-    // If user requests test of possibility of the rotation, do the same thing as above, and..
-    m_iPosX = next_x_pos;
-    m_iPosY = next_y_pos;
-
+    // preform the translation
+    piece[p][0] = (Y * -1) + offset_x;
+    piece[p][1] = X + offset_y;
   }
-    // Return true if user did or didn’t requested testing because we did test before,
-    // and if we passed it, it means that it’s all OK.
-    writePiece();
+  writePiece();
 
 
 }
@@ -444,6 +433,7 @@ void writePiece(){
 
 
 bool topBP = false;
+static long lastStick millis();
 void ohJoy(){
 
   int joystick_x = map(analogRead(JOY_X), 250, 700, 3, 0);  
