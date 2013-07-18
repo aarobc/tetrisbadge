@@ -18,7 +18,7 @@ void setup()
 void generatePiece(){
   checkLine();
   delay(10);
-  int wat = rand() % 5; 
+  int wat = rand() % 8; 
   //int wat = 3;
   int offset = 4;
   switch(wat){
@@ -67,7 +67,7 @@ void generatePiece(){
       piece[4][0] = 4;  
       break;
     case 4:
-      // square block
+      // L piece
       piece[0][1] = -1;  
       piece[0][0] =  5;  
 
@@ -83,6 +83,55 @@ void generatePiece(){
       piece[4][1] = 0;  
       piece[4][0] = 6;  
       break;
+    case 5:
+      // Backwards L piece
+      piece[0][1] = 0;  
+      piece[0][0] = 5;  
+
+      piece[1][1] = 0;  
+      piece[1][0] = 6;  
+
+      piece[2][1] = 0;  
+      piece[2][0] = 7;  
+
+      piece[3][1] = -1;  
+      piece[3][0] = 7;  
+      // rotation center point
+      piece[4][1] = -1;  
+      piece[4][0] = 6;  
+      break;
+      // angle piece 
+    case 6:
+      piece[0][1] = 0;  
+      piece[0][0] = 4;  
+
+      piece[1][1] = 0;  
+      piece[1][0] = 5;  
+
+      piece[2][1] = -1;  
+      piece[2][0] = 5;  
+
+      piece[3][1] = -1;  
+      piece[3][0] = 6;  
+      // rotation center point
+      piece[4][1] = -1;  
+      piece[4][0] = 5; 
+      break;
+    case 7:
+      piece[0][1] = -1;  
+      piece[0][0] = 5;  
+
+      piece[1][1] = -1;  
+      piece[1][0] = 6;  
+
+      piece[2][1] = -1;  
+      piece[2][0] = 7;  
+
+      piece[3][1] = 0;  
+      piece[3][0] = 6;  
+      // rotation center point
+      piece[4][1] = -1;  
+      piece[4][0] = 6; 
     default:
       break;
   }
@@ -112,6 +161,9 @@ void checkLine(){
 
     }
   }
+
+  // also checking the top
+  //
 }
 
 
@@ -127,14 +179,13 @@ void moveDown(int address){
 
 void dropPiece(){
 
-  int deep = 0; 
+  int check = 0; 
   copyPiece(piece, lastPiece);
-  for(int i = 0; i < 4; i++){
+  do{  
+    check = movePiece(0, 1); 
+    delay(20);
+  }while(check != 42);
 
-    for(int o = piece[i][0]; o < 16; o++){
-      deep = (frameBuffer[o][i] && (deep > i)) ? i : deep; 
-    }
-  }
 
 
 }
@@ -197,21 +248,23 @@ int movePiece(int x, int y){
         return 0;
 
     }
-    moveXY(x, 0);
+    // I'm not proud of this
+    return moveXY(x, 0);
   }
 
   if(y != 0){
     // check if at the bottom of the screen
     for(int p = 0; p < 4; p++){
       if(piece[p][1] > 14){
+
         generatePiece();
-        return 0;
+        return 42;
       }
     }
-    moveXY(1, 1);
+    // I'll fix it eventually i swear
+    return moveXY(1, 1);
 
   }
-
 }
 
 
@@ -244,7 +297,10 @@ int moveXY(int move, int axis){
       // reset the variable back to it's original value
       if(axis){
         generatePiece();       
-        return 0;
+        // return arbatrary value to indicate epic flail
+        // by this I mean my adderall has stopped working, and 
+        // I am sposed to indicate that you've hit the bottom
+        return 42;
       }
       copyPiece(lastPiece, piece);
       return 0;
@@ -296,9 +352,11 @@ void ohJoy(){
     lastStick = millis() + 100;
   }
 
-  if(oldX != joystick_x){
-
-    oldX = joystick_x;  
+  if(oldY != joystick_y){
+    if(joystick_y == 3){
+      dropPiece();
+    }
+    oldY = joystick_y;  
   }
 
   if(topB != topBP){
