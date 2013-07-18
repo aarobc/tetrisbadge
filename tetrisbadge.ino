@@ -1,11 +1,7 @@
 #include "badgeLib.h"
 
 // initializing the first piece
-int piece[5][2] = {{3,0},
-  {4,0},
-  {5,0},
-  {6,0},
-  {4,1}};
+int piece[5][2] = {0};
 
 int lastPiece[5][2] = {0};
 
@@ -15,7 +11,7 @@ int oldY = 0;
 void setup()
 {
   setupBadge();
-  Serial.begin(9600);
+  generatePiece();
 }
 
 
