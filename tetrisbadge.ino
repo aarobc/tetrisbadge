@@ -8,6 +8,26 @@ int lastPiece[5][2] = {0};
 int oldX = 0;  
 int oldY = 0;  
 
+
+int gOver[16][16] ={{1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                    {0,1,1,0,1,0,1,1,1,1,1,1,1,1,0,0},
+                    {0,1,1,1,0,1,0,1,0,1,1,1,0,1,0,1},
+                    {0,1,0,0,0,1,0,1,0,0,1,0,0,1,0,0},
+                    {0,1,1,0,0,0,0,1,0,1,0,1,0,1,0,1},
+                    {1,0,0,1,0,1,0,1,0,1,1,1,0,1,0,0},
+                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                    {1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                    {0,1,0,1,0,1,1,1,0,1,0,0,1,0,0,1},
+                    {0,1,0,1,0,1,1,1,0,1,0,1,1,0,1,0},
+                    {0,1,0,1,1,0,1,0,1,1,0,0,1,0,0,1},
+                    {0,1,0,1,1,0,1,0,1,1,0,1,1,0,0,1},
+                    {1,0,1,1,1,1,0,1,1,1,0,0,1,0,1,0},
+                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+                    
+
+
 void setup()
 {
   setupBadge();
@@ -137,6 +157,32 @@ void generatePiece(){
   }
 }
 
+
+void gameOver(){
+
+
+  for(int x = 0; x < 16; x++){
+
+    for(int y = 0; y < 16; y++){
+      frameBuffer[y][x] = !gOver[y][x]; 
+    }
+  }
+  // keeping it here until you press a button
+  bool topB = false;
+ do{
+    topB = digitalRead(BUTTON_TOP);   
+    delay(10);
+  }while(topB);
+
+  for(int x = 0; x < 16; x++){
+
+    for(int y = 0; y < 16; y++){
+      frameBuffer[y][x] = 0; 
+    }
+  }
+
+}
+
 void copyPiece(int source[][2], int dest[][2]){
   for(int p = 0; p < 5; p++){
     dest[p][0] = source[p][0];  
@@ -146,7 +192,10 @@ void copyPiece(int source[][2], int dest[][2]){
 
 void checkLine(){
 
+  bool top = false;
   for(int i = 0; i < 16; i++){
+    //hijacking this loop to also check the top
+    top = (frameBuffer[0][i]) ? true : top; 
     bool line = true;
     for(int p = 0; p < 16; p++){
 
@@ -158,10 +207,12 @@ void checkLine(){
     if(line){
       animateLine(i);
       moveDown(i);
-
     }
   }
-
+  
+ // if top is true, then game over 
+  if(top)
+    gameOver();
   // also checking the top
   //
 }
