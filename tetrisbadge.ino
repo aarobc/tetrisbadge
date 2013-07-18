@@ -8,7 +8,7 @@ int lastPiece[5][2] = {0};
 int oldX = 0;  
 int oldY = 0;  
 
-
+// game over array
 int gOver[16][16] ={{1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
                     {0,1,1,0,1,0,1,1,1,1,1,1,1,1,0,0},
                     {0,1,1,1,0,1,0,1,0,1,1,1,0,1,0,1},
@@ -380,18 +380,13 @@ void writePiece(){
 }
 
 
-bool topBP = false;
 static long lastStick = 0;
 void ohJoy(){
 
   int joystick_x = map(analogRead(JOY_X), 250, 700, 3, 0);  
-  int joystick_y = map(analogRead(JOY_Y), 300, 800, 0, 3);  
 
-  bool topB = digitalRead(BUTTON_TOP);   
 
   if(millis() > lastStick){
-
-
     if(joystick_x == 3){
       movePiece(1, 0);
     }
@@ -399,8 +394,24 @@ void ohJoy(){
     if(joystick_x == 0){
       movePiece(-1, 0);
     }
-
+    // determines the speed side to side of the falling block
     lastStick = millis() + 100;
+  }
+
+}
+
+bool topBP = false;
+
+void loop()
+{
+  static long lastTime = millis();
+  int joystick_y = map(analogRead(JOY_Y), 300, 800, 0, 3);  
+  ohJoy();
+  if(millis() > lastTime + 300)
+  {
+    lastTime = millis();
+    //  drop();
+    movePiece(0, 1); 
   }
 
   if(oldY != joystick_y){
@@ -410,23 +421,11 @@ void ohJoy(){
     oldY = joystick_y;  
   }
 
+  bool topB = digitalRead(BUTTON_TOP);   
   if(topB != topBP){
     if(!topB){
       rotatePiece();
     }
     topBP = topB;
-  }
-}
-
-
-void loop()
-{
-  static long lastTime = millis();
-  ohJoy();
-  if(millis() > lastTime + 300)
-  {
-    lastTime = millis();
-    //  drop();
-    movePiece(0, 1); 
   }
 }
