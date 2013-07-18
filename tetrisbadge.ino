@@ -313,9 +313,9 @@ void dropPiece(){
   copyPiece(piece, lastPiece);
   for(int i = 0; i < 4; i++){
       
-  }
-  for(int o = 0; o < 16; o++){
-   // piece[o][
+    for(int o = piece[i][0]; o < 16; o++){
+      deep = (frameBuffer[o][i] && (deep > i)) ? i : deep; 
+    }
   }
 
 
