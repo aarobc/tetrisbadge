@@ -1,4 +1,5 @@
 #include "badgeLib.h"
+#include "theme.h"
 
 // initializing the first piece
 int piece[5][2] = {0};
@@ -380,6 +381,7 @@ void writePiece(){
 }
 
 
+
 static long lastStick = 0;
 void ohJoy(){
 
@@ -404,6 +406,8 @@ bool topBP = false;
 
 void loop()
 {
+  // uncommenting this will break everything and you'll have to re-flash your badge
+ // song();
   static long lastTime = millis();
   int joystick_y = map(analogRead(JOY_Y), 300, 800, 0, 3);  
   ohJoy();

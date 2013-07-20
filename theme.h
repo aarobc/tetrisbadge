@@ -16,7 +16,8 @@
    - Finished melody + bass
 */
  
- #include "pitches.h"
+#define BUZZER A4            //PF1
+#include "pitches.h"
 
     // notes in the melody:
 int melody[] = {
@@ -87,30 +88,61 @@ int noteDurations[] = {
   
   };
 
-int sPin = A4;
-void setup() {
-    // iterate over the notes of the melody:
-  for (int thisNote = 0; thisNote < 1000; thisNote++) {
 
-    /*
-    to calculate the note duration, take one second divided by the note type.
-    e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-    */
-    int noteDuration = 1000/noteDurations[thisNote];
-    tone(sPin, melody[thisNote],noteDuration);
 
-    // to distinguish the notes, set a minimum time between them.
-    // the note's duration + 30% seems to work well:
-    int pauseBetweenNotes = noteDuration * 1.30;
-    delay(pauseBetweenNotes);
-    // stop the tone playing:
-    noTone(sPin);
+// void setup() {
+//     // iterate over the notes of the melody:
+//   for (int thisnote = 0; thisnote < 1000; thisnote++) {
+
+//     /*
+//     to calculate the note duration, take one second divided by the note type.
+//     e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+//     */
+//     int noteduration = 1000/notedurations[thisnote];
+//     tone(buzzer, melody[thisnote],noteduration);
+
+//     // to distinguish the notes, set a minimum time between them.
+//     // the note's duration + 30% seems to work well:
+//     int pausebetweennotes = noteduration * 1.30;
+//     delay(pausebetweennotes);
+//     // stop the tone playing:
+//     notone(buzzer);
+//   }
+//   digitalwrite(buzzer,low);
+// }
+
+//unsigned long songTime = 0;
+//bool playing = false;
+int thisNote = 0;
+unsigned long tiem = 0;
+bool playing = false;
+void song(){
+  // iterate over the notes of the melody:
+  if(millis() > tiem){
+    if(!playing){
+      int noteduration = 1000/noteDurations[thisNote];
+      tone(BUZZER, melody[thisNote],noteduration);
+
+      // to distinguish the notes, set a minimum time between them.
+      // the note's duration + 30% seems to work well:
+      int pausebetweennotes = noteduration * 1.30;
+      //delay(pausebetweennotes);
+      tiem = pausebetweennotes + millis();
+      playing = true;
+    }
+    else{
+      // stop the tone playing:
+      noTone(BUZZER);
+      thisNote = (thisNote > 1000) ? 0 : thisNote + 1;
+      playing = false;
+    }
   }
-  digitalWrite(sPin,LOW);
+  //   digitalWrite(BUZZER,LOW);
+
 }
 
-void loop() {
-    //Reset to replay.
-}
-
-
+//void loop(){
+//
+//  song();
+//
+//}
