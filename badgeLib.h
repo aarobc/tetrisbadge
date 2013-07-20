@@ -21,6 +21,7 @@
 #define BATTERY_VOLTS A5     //PF0
 #define BUTTON_TOP 7         //PE6
 //#define BUTTON_BOTTOM      //PD5 No Arduino Pin
+#define PORT5_SET         0b00100000
 
 static int currentCol = 0;
 const int selectPin = 2; 

@@ -403,6 +403,7 @@ void ohJoy(){
 }
 
 bool topBP = false;
+bool bottomBP = false;
 
 void loop()
 {
@@ -420,7 +421,7 @@ void loop()
 
   if(oldY != joystick_y){
     if(joystick_y == 3){
-      dropPiece();
+     // dropPiece();
     }
     oldY = joystick_y;  
   }
@@ -431,5 +432,15 @@ void loop()
       rotatePiece();
     }
     topBP = topB;
+  }
+
+    
+    // reading the bottom button 
+  bool bottomB = (PIND & PORT5_SET);   
+  if(bottomB != bottomBP){
+    if(!bottomB){
+      dropPiece();
+    }
+    bottomBP = bottomB;
   }
 }
