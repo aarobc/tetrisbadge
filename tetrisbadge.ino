@@ -35,6 +35,9 @@ void setup()
   generatePiece();
 }
 
+int bright(int in){
+  return (in) ? 7 : 0;
+}
 
 void generatePiece(){
   checkLine();
@@ -165,7 +168,7 @@ void gameOver(){
   for(int x = 0; x < 16; x++){
 
     for(int y = 0; y < 16; y++){
-      frameBuffer[y][x] = !gOver[y][x]; 
+      frameBuffer[y][x] = bright(!gOver[y][x]); 
     }
   }
   // keeping it here until you press a button
@@ -249,7 +252,7 @@ void animateLine(int line){
   }
   delay(300);
   for(int p = 0; p < 16; p++){
-    frameBuffer[line][p] = 1;
+    frameBuffer[line][p] = bright(1);
     //frameBuffer[line][o] = 1;
   }
   delay(300);
@@ -365,7 +368,7 @@ void writePiece(){
 
   for(int p = 0; p < 4; p++){
     bool flict = false;
-    frameBuffer[piece[p][1]][piece[p][0]] = 1;  
+    frameBuffer[piece[p][1]][piece[p][0]] = bright(1);  
 
     // checking for conflict 
     for(int o = 0; o < 4; o++){
@@ -408,7 +411,7 @@ bool bottomBP = false;
 void loop()
 {
   // uncommenting this will break everything and you'll have to re-flash your badge
- // song();
+  song();
   static long lastTime = millis();
   int joystick_y = map(analogRead(JOY_Y), 300, 800, 0, 3);  
   ohJoy();

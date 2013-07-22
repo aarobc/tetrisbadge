@@ -18,7 +18,7 @@
  
 #define BUZZER A4            //PF1
 #include "pitches.h"
-
+#include "NewTone.h"
     // notes in the melody:
 int melody[] = {
   NOTE_E5, NOTE_E3, NOTE_B4, NOTE_C5, NOTE_D5, NOTE_E5, NOTE_D5, NOTE_C5, 
@@ -121,7 +121,7 @@ void song(){
   if(millis() > tiem){
     if(!playing){
       int noteduration = 1000/noteDurations[thisNote];
-      tone(BUZZER, melody[thisNote],noteduration);
+      NewTone(BUZZER, melody[thisNote],noteduration);
 
       // to distinguish the notes, set a minimum time between them.
       // the note's duration + 30% seems to work well:
@@ -132,7 +132,7 @@ void song(){
     }
     else{
       // stop the tone playing:
-      noTone(BUZZER);
+      noNewTone(BUZZER);
       thisNote = (thisNote > 1000) ? 0 : thisNote + 1;
       playing = false;
     }
@@ -141,6 +141,8 @@ void song(){
 
 }
 
+//void setup(){}
+//
 //void loop(){
 //
 //  song();
