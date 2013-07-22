@@ -411,7 +411,7 @@ bool bottomBP = false;
 void loop()
 {
   // uncommenting this will break everything and you'll have to re-flash your badge
-  song();
+//  song();
   static long lastTime = millis();
   int joystick_y = map(analogRead(JOY_Y), 300, 800, 0, 3);  
   ohJoy();
